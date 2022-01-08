@@ -105,6 +105,17 @@ app.get("/movies/read/id/:ID", (req, res) => {
 
 app.get("/movies/update", (req, res) => {});
 
-app.get("/movies/delete", (req, res) => {});
+app.get("/movies/delete/:ID", (req, res) => {
+  if (Number(req.params.ID) >= 0 && req.params.ID < movies.length) {
+    movies.splice(parseInt(req.params.ID), 1);
+    res.send(movies);
+  } else {
+    res.status(404).send({
+      status: 404,
+      error: true,
+      message: `the movie ${req.params.ID} does not exist`,
+    });
+  }
+});
 
 app.listen(port, console.log(`Connected to ${port}`));

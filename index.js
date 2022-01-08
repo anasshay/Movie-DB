@@ -103,7 +103,25 @@ app.get("/movies/read/id/:ID", (req, res) => {
   }
 });
 
-app.get("/movies/update", (req, res) => {});
+app.get("/movies/update/:ID", (req, res) => {
+  if (Number(req.params.ID) >= 0 && req.params.ID < movies.length) {
+    if (req.query.title) {
+      movies[req.params.ID].title = req.query.title;
+    }
+    if (req.query.rating && !isNaN(req.query.rating)) {
+      movies[req.params.ID].rating = req.query.rating;
+    }
+    if (
+      req.query.year &&
+      req.query.year &&
+      req.query.year >= 1000 &&
+      !isNaN(req.query.year)
+    ) {
+      movies[req.params.ID].year = req.query.year;
+    }
+    res.status(200).send({ status: 200, data: movies });
+  }
+});
 
 app.get("/movies/delete/:ID", (req, res) => {
   if (Number(req.params.ID) >= 0 && req.params.ID < movies.length) {

@@ -47,10 +47,9 @@ app.get("/movies/add", (req, res) => {
     req.query.title &&
     req.query.year &&
     req.query.year >= 1000 &&
-    !isNaN(req.query.year) &&
-    !isNaN(req.query.rating)
+    !isNaN(req.query.year)
   ) {
-    if (req.query.rating == "") {
+    if (req.query.rating == undefined) {
       req.query.rating = 4;
       movies.push(req.query);
       res.send(movies);

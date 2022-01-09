@@ -1,6 +1,15 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
+const url =
+  "mongodb+srv://anass2:n5M54RDZUf8bRX7L@cluster0.6bpfc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const Movies = require("./modules/movies");
+
+mongoose.connect(url, { useNewUrlParser: true });
+const db = mongoose.connection;
+db.on("error", (error) => console.log(error));
+db.once("open", () => console.log("Connected to Database"));
 
 const movies = [
   { title: "Jaws", year: 1975, rating: 8 },
@@ -8,6 +17,8 @@ const movies = [
   { title: "Brazil", year: 1985, rating: 8 },
   { title: "الإرهاب والكباب‎", year: 1992, rating: 6.2 },
 ];
+
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("ok.");
@@ -42,19 +53,17 @@ app.get("/search", (req, res) => {
 
 // Movies :
 
-app.get("/movies/add", (req, res) => {
-  if (
-    req.query.title &&
-    req.query.year &&
-    req.query.year >= 1000 &&
-    !isNaN(req.query.year)
-  ) {
-    if (req.query.rating == undefined) {
-      req.query.rating = 4;
-      movies.push(req.query);
+app.post("/movies", (req, res) => {
+  let newTitle = req.body.title;
+  let newYear = req.body.year;
+  let newRating = req.body.rating;
+  if (newTitle && newYear && newYear >= 1000 && !isNaN(newYear)) {
+    if (newRating == undefined) {
+      req.body.rating = 4;
+      movies.push(req.body);
       res.send(movies);
     } else {
-      movies.push(req.query);
+      movies.push(req.body);
       res.send(movies);
     }
   } else {
@@ -65,6 +74,8 @@ app.get("/movies/add", (req, res) => {
     });
   }
 });
+
+
 
 app.get("/movies/read", (req, res) => {
   res.status(200).send({ status: 200, data: movies });
@@ -102,27 +113,38 @@ app.get("/movies/read/id/:ID", (req, res) => {
   }
 });
 
-app.get("/movies/update/:ID", (req, res) => {
+
+
+
+app.patch("/movies/:ID", (req, res) => {
+    let newTitle = req.body.newTitle;
+    let newYear = req.body.newYear;
+    let newRating = req.body.newRating;
+    console.log(req.body);
   if (Number(req.params.ID) >= 0 && req.params.ID < movies.length) {
-    if (req.query.title) {
-      movies[req.params.ID].title = req.query.title;
+    if (newTitle) {
+      movies[req.params.ID].title = newTitle;
     }
-    if (req.query.rating && !isNaN(req.query.rating)) {
-      movies[req.params.ID].rating = req.query.rating;
+    if (newRating && !isNaN(newRating)) {
+      movies[req.params.ID].rating = newRating;
     }
     if (
-      req.query.year &&
-      req.query.year &&
-      req.query.year >= 1000 &&
-      !isNaN(req.query.year)
+      newYear &&
+      newYear &&
+      newYear >= 1000 &&
+      !isNaN(newYear)
     ) {
-      movies[req.params.ID].year = req.query.year;
+      movies[req.params.ID].year = newYear;
     }
     res.status(200).send({ status: 200, data: movies });
   }
 });
 
-app.get("/movies/delete/:ID", (req, res) => {
+
+
+
+
+app.delete("/movies/:ID", (req, res) => {
   if (Number(req.params.ID) >= 0 && req.params.ID < movies.length) {
     movies.splice(parseInt(req.params.ID), 1);
     res.send(movies);

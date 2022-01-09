@@ -14,6 +14,6 @@ const moviesSchema = new mongoose.Schema ({
         required: true,
         default: 4, 
     }
-})
+},{versionKey: false})
 
 module.exports = mongoose.model ('movies', moviesSchema)

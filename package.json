@@ -2,10 +2,10 @@
   "name": "movie-db",
   "version": "1.0.0",
   "description": "or CMDB for short",
-  "main": "indexUser.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon indexUser.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
